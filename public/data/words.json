@@ -1,0 +1,21 @@
+{
+  "das": [
+    { "word": "problem*e", "translation": "problem" },
+    { "word": "auto*s", "translation": "car" },
+    { "word": "haus*(:)er", "translation": "house" },
+    { "word": "kind*er", "translation": "child" },
+    { "word": "buch*(:)er", "translation": "book" }
+  ],
+  "die": [
+    { "word": "wohnung*en", "translation": "apartment" },
+    { "word": "katze*n", "translation": "cat" },
+    { "word": "uhr*en", "translation": "clock" },
+    { "word": "farbe*n", "translation": "color" }
+  ],
+  "der": [
+    { "word": "tisch*e", "translation": "table" },
+    { "word": "mann*(:)er", "translation": "man" },
+    { "word": "hund*e", "translation": "dog" },
+    { "word": "apfel*(:)", "translation": "apple" }
+  ]
+}

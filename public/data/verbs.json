@@ -1,0 +1,59 @@
+{
+  "categories": {
+    "mntd": "Stem ends in m/n/t/d → insert 'e' before -st/-t endings (du: -est, er/sie/es: -et)"
+  },
+  "verbs": [
+    {
+      "infinitive": "atmen",
+      "category": "mntd",
+      "translation": "to breathe",
+      "conjugation": {
+        "ich": "atme",
+        "du": "atmest",
+        "er/sie/es": "atmet",
+        "wir": "atmen",
+        "ihr": "atmet",
+        "sie/Sie": "atmen"
+      }
+    },
+    {
+      "infinitive": "ordnen",
+      "category": "mntd",
+      "translation": "to organize",
+      "conjugation": {
+        "ich": "ordne",
+        "du": "ordnest",
+        "er/sie/es": "ordnet",
+        "wir": "ordnen",
+        "ihr": "ordnet",
+        "sie/Sie": "ordnen"
+      }
+    },
+    {
+      "infinitive": "arbeiten",
+      "category": "mntd",
+      "translation": "to work",
+      "conjugation": {
+        "ich": "arbeite",
+        "du": "arbeitest",
+        "er/sie/es": "arbeitet",
+        "wir": "arbeiten",
+        "ihr": "arbeitet",
+        "sie/Sie": "arbeiten"
+      }
+    },
+    {
+      "infinitive": "baden",
+      "category": "mntd",
+      "translation": "to bathe",
+      "conjugation": {
+        "ich": "bade",
+        "du": "badest",
+        "er/sie/es": "badet",
+        "wir": "baden",
+        "ihr": "badet",
+        "sie/Sie": "baden"
+      }
+    }
+  ]
+}
