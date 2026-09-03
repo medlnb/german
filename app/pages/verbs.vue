@@ -138,7 +138,7 @@
           🎉 Done! {{ testResults.length }} verb{{
             testResults.length === 1 ? "" : "s"
           }}
-          tested.
+          tested ({{ categoryLabel(category) }}).
         </p>
         <p class="hint">
           Correct: {{ correctCount }} / {{ testResults.length }}
@@ -147,7 +147,9 @@
       </div>
 
       <div v-else class="test-panel">
-        <div class="test-counter">{{ remainingCount }} left</div>
+        <div class="test-counter">
+          {{ remainingCount }} left · filter: {{ categoryLabel(category) }}
+        </div>
 
         <div
           class="test-translation"
@@ -280,6 +282,7 @@ function toggleExpand(infinitive: string) {
   expanded.value = s;
 }
 
+// Filtered by the active category — drives BOTH view mode's list and test mode's quiz set
 const flatVerbs = computed(() => {
   if (!rawData.value) return [];
   const all = rawData.value.verbs;
@@ -312,7 +315,7 @@ function normalize(s: string) {
     .replace(/ß/g, "ss");
 }
 
-// strip the infinitive "-en"/"-n" ending, then take the last stem letter (m/n/t/d etc.)
+// strip the infinitive "-en"/"-n" ending, then take the last stem letter (m/n/t/d/s/x/z/ß)
 function endingLetter(infinitive: string): string {
   const stem = infinitive.endsWith("en")
     ? infinitive.slice(0, -2)
@@ -320,7 +323,7 @@ function endingLetter(infinitive: string): string {
   return stem.slice(-1).toLowerCase();
 }
 
-// --- Test mode ---
+// --- Test mode: always drawn from flatVerbs, so it always respects the active filter ---
 const testVerbs = computed(() => flatVerbs.value);
 const testIndex = ref(0);
 const testInput = ref("");
@@ -357,6 +360,7 @@ function restartTest() {
   lastResult.value = null;
 }
 
+// Whenever the filtered list changes (category switch, data load), reset the quiz
 watch(flatVerbs, restartTest);
 </script>
 
@@ -455,6 +459,18 @@ watch(flatVerbs, restartTest);
 .gender-badge.cat-d {
   color: #7ce0c3;
 }
+.gender-badge.cat-s {
+  color: #a685ff;
+}
+.gender-badge.cat-x {
+  color: #ff9d5c;
+}
+.gender-badge.cat-z {
+  color: #5cd6ff;
+}
+[class*="cat-ß"] {
+  color: #ff5c8a;
+}
 
 .word-text {
   flex: 1 1 auto;
@@ -545,6 +561,7 @@ watch(flatVerbs, restartTest);
 .test-counter {
   font-size: 0.8rem;
   color: rgba(230, 238, 248, 0.6);
+  text-align: center;
 }
 .test-translation {
   font-size: 1.6rem;

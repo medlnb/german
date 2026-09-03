@@ -1,8 +1,244 @@
 {
   "categories": {
-    "mntd": "Stem ends in m/n/t/d → insert 'e' before -st/-t endings (du: -est, er/sie/es: -et)"
+    "regular": "Regular (weak) verbs — standard endings: -e, -st, -t, -en, -t, -en",
+    "mntd": "Stem ends in m/n/d/t → insert 'e' before -st/-t endings (du: -est, er/sie/es: -et)",
+    "sxz": "Stem ends in s/ß/x/z → du takes only -t, not -st, since the stem already ends in a sibilant"
   },
   "verbs": [
+    {
+      "infinitive": "machen",
+      "category": "regular",
+      "translation": "to do / make",
+      "conjugation": {
+        "ich": "mache",
+        "du": "machst",
+        "er/sie/es": "macht",
+        "wir": "machen",
+        "ihr": "macht",
+        "sie/Sie": "machen"
+      }
+    },
+    {
+      "infinitive": "kaufen",
+      "category": "regular",
+      "translation": "to buy",
+      "conjugation": {
+        "ich": "kaufe",
+        "du": "kaufst",
+        "er/sie/es": "kauft",
+        "wir": "kaufen",
+        "ihr": "kauft",
+        "sie/Sie": "kaufen"
+      }
+    },
+    {
+      "infinitive": "verkaufen",
+      "category": "regular",
+      "translation": "to sell",
+      "conjugation": {
+        "ich": "verkaufe",
+        "du": "verkaufst",
+        "er/sie/es": "verkauft",
+        "wir": "verkaufen",
+        "ihr": "verkauft",
+        "sie/Sie": "verkaufen"
+      }
+    },
+    {
+      "infinitive": "wohnen",
+      "category": "regular",
+      "translation": "to live / reside",
+      "conjugation": {
+        "ich": "wohne",
+        "du": "wohnst",
+        "er/sie/es": "wohnt",
+        "wir": "wohnen",
+        "ihr": "wohnt",
+        "sie/Sie": "wohnen"
+      }
+    },
+    {
+      "infinitive": "spielen",
+      "category": "regular",
+      "translation": "to play",
+      "conjugation": {
+        "ich": "spiele",
+        "du": "spielst",
+        "er/sie/es": "spielt",
+        "wir": "spielen",
+        "ihr": "spielt",
+        "sie/Sie": "spielen"
+      }
+    },
+    {
+      "infinitive": "lieben",
+      "category": "regular",
+      "translation": "to love",
+      "conjugation": {
+        "ich": "liebe",
+        "du": "liebst",
+        "er/sie/es": "liebt",
+        "wir": "lieben",
+        "ihr": "liebt",
+        "sie/Sie": "lieben"
+      }
+    },
+    {
+      "infinitive": "trinken",
+      "category": "regular",
+      "translation": "to drink",
+      "conjugation": {
+        "ich": "trinke",
+        "du": "trinkst",
+        "er/sie/es": "trinkt",
+        "wir": "trinken",
+        "ihr": "trinkt",
+        "sie/Sie": "trinken"
+      }
+    },
+    {
+      "infinitive": "denken",
+      "category": "regular",
+      "translation": "to think",
+      "conjugation": {
+        "ich": "denke",
+        "du": "denkst",
+        "er/sie/es": "denkt",
+        "wir": "denken",
+        "ihr": "denkt",
+        "sie/Sie": "denken"
+      }
+    },
+    {
+      "infinitive": "bringen",
+      "category": "regular",
+      "translation": "to bring",
+      "conjugation": {
+        "ich": "bringe",
+        "du": "bringst",
+        "er/sie/es": "bringt",
+        "wir": "bringen",
+        "ihr": "bringt",
+        "sie/Sie": "bringen"
+      }
+    },
+    {
+      "infinitive": "kommen",
+      "category": "regular",
+      "translation": "to come",
+      "conjugation": {
+        "ich": "komme",
+        "du": "kommst",
+        "er/sie/es": "kommt",
+        "wir": "kommen",
+        "ihr": "kommt",
+        "sie/Sie": "kommen"
+      }
+    },
+    {
+      "infinitive": "hören",
+      "category": "regular",
+      "translation": "to hear",
+      "conjugation": {
+        "ich": "höre",
+        "du": "hörst",
+        "er/sie/es": "hört",
+        "wir": "hören",
+        "ihr": "hört",
+        "sie/Sie": "hören"
+      }
+    },
+    {
+      "infinitive": "fragen",
+      "category": "regular",
+      "translation": "to ask",
+      "conjugation": {
+        "ich": "frage",
+        "du": "fragst",
+        "er/sie/es": "fragt",
+        "wir": "fragen",
+        "ihr": "fragt",
+        "sie/Sie": "fragen"
+      }
+    },
+    {
+      "infinitive": "fliegen",
+      "category": "regular",
+      "translation": "to fly",
+      "conjugation": {
+        "ich": "fliege",
+        "du": "fliegst",
+        "er/sie/es": "fliegt",
+        "wir": "fliegen",
+        "ihr": "fliegt",
+        "sie/Sie": "fliegen"
+      }
+    },
+    {
+      "infinitive": "schreiben",
+      "category": "regular",
+      "translation": "to write",
+      "conjugation": {
+        "ich": "schreibe",
+        "du": "schreibst",
+        "er/sie/es": "schreibt",
+        "wir": "schreiben",
+        "ihr": "schreibt",
+        "sie/Sie": "schreiben"
+      }
+    },
+    {
+      "infinitive": "studieren",
+      "category": "regular",
+      "translation": "to study",
+      "conjugation": {
+        "ich": "studiere",
+        "du": "studierst",
+        "er/sie/es": "studiert",
+        "wir": "studieren",
+        "ihr": "studiert",
+        "sie/Sie": "studieren"
+      }
+    },
+    {
+      "infinitive": "besuchen",
+      "category": "regular",
+      "translation": "to visit",
+      "conjugation": {
+        "ich": "besuche",
+        "du": "besuchst",
+        "er/sie/es": "besucht",
+        "wir": "besuchen",
+        "ihr": "besucht",
+        "sie/Sie": "besuchen"
+      }
+    },
+    {
+      "infinitive": "arbeiten",
+      "category": "mntd",
+      "translation": "to work",
+      "conjugation": {
+        "ich": "arbeite",
+        "du": "arbeitest",
+        "er/sie/es": "arbeitet",
+        "wir": "arbeiten",
+        "ihr": "arbeitet",
+        "sie/Sie": "arbeiten"
+      }
+    },
+    {
+      "infinitive": "öffnen",
+      "category": "mntd",
+      "translation": "to open",
+      "conjugation": {
+        "ich": "öffne",
+        "du": "öffnest",
+        "er/sie/es": "öffnet",
+        "wir": "öffnen",
+        "ihr": "öffnet",
+        "sie/Sie": "öffnen"
+      }
+    },
     {
       "infinitive": "atmen",
       "category": "mntd",
@@ -30,19 +266,6 @@
       }
     },
     {
-      "infinitive": "arbeiten",
-      "category": "mntd",
-      "translation": "to work",
-      "conjugation": {
-        "ich": "arbeite",
-        "du": "arbeitest",
-        "er/sie/es": "arbeitet",
-        "wir": "arbeiten",
-        "ihr": "arbeitet",
-        "sie/Sie": "arbeiten"
-      }
-    },
-    {
       "infinitive": "baden",
       "category": "mntd",
       "translation": "to bathe",
@@ -53,6 +276,188 @@
         "wir": "baden",
         "ihr": "badet",
         "sie/Sie": "baden"
+      }
+    },
+    {
+      "infinitive": "beobachten",
+      "category": "mntd",
+      "translation": "to observe",
+      "conjugation": {
+        "ich": "beobachte",
+        "du": "beobachtest",
+        "er/sie/es": "beobachtet",
+        "wir": "beobachten",
+        "ihr": "beobachtet",
+        "sie/Sie": "beobachten"
+      }
+    },
+    {
+      "infinitive": "beginnen",
+      "category": "mntd",
+      "translation": "to begin",
+      "conjugation": {
+        "ich": "beginne",
+        "du": "beginnst",
+        "er/sie/es": "beginnt",
+        "wir": "beginnen",
+        "ihr": "beginnt",
+        "sie/Sie": "beginnen"
+      }
+    },
+    {
+      "infinitive": "antworten",
+      "category": "mntd",
+      "translation": "to answer",
+      "conjugation": {
+        "ich": "antworte",
+        "du": "antwortest",
+        "er/sie/es": "antwortet",
+        "wir": "antworten",
+        "ihr": "antwortet",
+        "sie/Sie": "antworten"
+      }
+    },
+    {
+      "infinitive": "warten",
+      "category": "mntd",
+      "translation": "to wait",
+      "conjugation": {
+        "ich": "warte",
+        "du": "wartest",
+        "er/sie/es": "wartet",
+        "wir": "warten",
+        "ihr": "wartet",
+        "sie/Sie": "warten"
+      }
+    },
+    {
+      "infinitive": "bluten",
+      "category": "mntd",
+      "translation": "to bleed",
+      "conjugation": {
+        "ich": "blute",
+        "du": "blutest",
+        "er/sie/es": "blutet",
+        "wir": "bluten",
+        "ihr": "blutet",
+        "sie/Sie": "bluten"
+      }
+    },
+    {
+      "infinitive": "senden",
+      "category": "mntd",
+      "translation": "to send",
+      "conjugation": {
+        "ich": "sende",
+        "du": "sendest",
+        "er/sie/es": "sendet",
+        "wir": "senden",
+        "ihr": "sendet",
+        "sie/Sie": "senden"
+      }
+    },
+    {
+      "infinitive": "reden",
+      "category": "mntd",
+      "translation": "to talk / speak",
+      "conjugation": {
+        "ich": "rede",
+        "du": "redest",
+        "er/sie/es": "redet",
+        "wir": "reden",
+        "ihr": "redet",
+        "sie/Sie": "reden"
+      }
+    },
+    {
+      "infinitive": "finden",
+      "category": "mntd",
+      "translation": "to find",
+      "conjugation": {
+        "ich": "finde",
+        "du": "findest",
+        "er/sie/es": "findet",
+        "wir": "finden",
+        "ihr": "findet",
+        "sie/Sie": "finden"
+      }
+    },
+    {
+      "infinitive": "bitten",
+      "category": "mntd",
+      "translation": "to ask / request",
+      "conjugation": {
+        "ich": "bitte",
+        "du": "bittest",
+        "er/sie/es": "bittet",
+        "wir": "bitten",
+        "ihr": "bittet",
+        "sie/Sie": "bitten"
+      }
+    },
+    {
+      "infinitive": "heißen",
+      "category": "sxz",
+      "translation": "to be called",
+      "conjugation": {
+        "ich": "heiße",
+        "du": "heißt",
+        "er/sie/es": "heißt",
+        "wir": "heißen",
+        "ihr": "heißt",
+        "sie/Sie": "heißen"
+      }
+    },
+    {
+      "infinitive": "hassen",
+      "category": "sxz",
+      "translation": "to hate",
+      "conjugation": {
+        "ich": "hasse",
+        "du": "hasst",
+        "er/sie/es": "hasst",
+        "wir": "hassen",
+        "ihr": "hasst",
+        "sie/Sie": "hassen"
+      }
+    },
+    {
+      "infinitive": "mixen",
+      "category": "sxz",
+      "translation": "to mix",
+      "conjugation": {
+        "ich": "mixe",
+        "du": "mixt",
+        "er/sie/es": "mixt",
+        "wir": "mixen",
+        "ihr": "mixt",
+        "sie/Sie": "mixen"
+      }
+    },
+    {
+      "infinitive": "tanzen",
+      "category": "sxz",
+      "translation": "to dance",
+      "conjugation": {
+        "ich": "tanze",
+        "du": "tanzt",
+        "er/sie/es": "tanzt",
+        "wir": "tanzen",
+        "ihr": "tanzt",
+        "sie/Sie": "tanzen"
+      }
+    },
+    {
+      "infinitive": "grüßen",
+      "category": "sxz",
+      "translation": "to greet",
+      "conjugation": {
+        "ich": "grüße",
+        "du": "grüßt",
+        "er/sie/es": "grüßt",
+        "wir": "grüßen",
+        "ihr": "grüßt",
+        "sie/Sie": "grüßen"
       }
     }
   ]
