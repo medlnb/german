@@ -36,19 +36,6 @@
       </button>
     </div>
 
-    <div class="buttons top">
-      <button
-        class="btn small"
-        @click="showTranslations = !showTranslations"
-        v-if="!memorizeMode"
-      >
-        {{ showTranslations ? "Hide Translations" : "Show Translations" }}
-      </button>
-      <button class="btn small" @click="toggleMode">
-        Mode: {{ memorizeMode ? "Test" : "View" }}
-      </button>
-    </div>
-
     <p v-if="loading" class="hint">Loading words…</p>
     <p v-else-if="error" class="hint error">{{ error }}</p>
 
@@ -132,11 +119,10 @@
 
         <div class="test-input-row" v-if="!lastResult">
           <input
+            ref="answerInput"
             v-model="testInput"
             class="answer-input"
             placeholder="Type the German word"
-            @keyup.enter="submitTest"
-            autofocus
           />
           <button
             class="btn small"
@@ -178,7 +164,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue";
+import {
+  ref,
+  computed,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+} from "vue";
 
 const hideWord = ref(false);
 
@@ -330,6 +323,31 @@ const correctCount = computed(
   () => testResults.value.filter((r) => r.correct).length,
 );
 
+// --- Input focus + Enter key handling ---
+const answerInput = ref<HTMLInputElement | null>(null);
+
+function focusInput() {
+  nextTick(() => answerInput.value?.focus());
+}
+
+// Enter: check the answer while typing, go to the next word once the
+// result is showing. One keydown handler so the Enter that submits
+// can't also trigger "next".
+function onKeydown(e: KeyboardEvent) {
+  if (e.key !== "Enter" || e.repeat || e.isComposing) return;
+  if (!memorizeMode.value || !currentTestWord.value) return;
+
+  if (lastResult.value) {
+    e.preventDefault();
+    nextTestWord();
+  } else if (e.target === answerInput.value) {
+    submitTest();
+  }
+}
+
+onMounted(() => window.addEventListener("keydown", onKeydown));
+onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
+
 function submitTest() {
   if (!testInput.value.trim() || !currentTestWord.value) return;
 
@@ -358,6 +376,7 @@ function nextTestWord() {
   testIndex.value++;
   testInput.value = "";
   lastResult.value = null;
+  focusInput();
 }
 
 function restartTest() {
@@ -365,6 +384,7 @@ function restartTest() {
   testInput.value = "";
   testResults.value = [];
   lastResult.value = null;
+  focusInput();
 }
 
 watch(flatWords, restartTest);
