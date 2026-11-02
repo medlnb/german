@@ -315,10 +315,23 @@ function normalize(s: string) {
   return s
     .toLowerCase()
     .trim()
-    .replace(/ä/g, "ae")
-    .replace(/ö/g, "oe")
-    .replace(/ü/g, "ue")
+    .replace(/ä/g, "a")
+    .replace(/ö/g, "o")
+    .replace(/ü/g, "u")
+    .replace(/ae/g, "a")
+    .replace(/oe/g, "o")
+    .replace(/ue/g, "u")
     .replace(/ß/g, "ss");
+}
+
+// Shuffle once per test run so the order is never the same twice.
+function shuffle<T>(items: T[]): T[] {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
 // strip the infinitive "-en"/"-n" ending, then take the last stem letter (m/n/t/d/s/x/z/ß)
@@ -329,8 +342,8 @@ function endingLetter(infinitive: string): string {
   return stem.slice(-1).toLowerCase();
 }
 
-// --- Test mode: always drawn from flatVerbs, so it always respects the active filter ---
-const testVerbs = computed(() => flatVerbs.value);
+// --- Test mode: drawn from flatVerbs (so it respects the active filter), shuffled per run ---
+const testVerbs = ref<VerbEntry[]>([]);
 const testIndex = ref(0);
 const testInput = ref("");
 const testResults = ref<{ infinitive: string; correct: boolean }[]>([]);
@@ -386,6 +399,7 @@ function nextTestVerb() {
 }
 
 function restartTest() {
+  testVerbs.value = shuffle(flatVerbs.value);
   testIndex.value = 0;
   testInput.value = "";
   testResults.value = [];

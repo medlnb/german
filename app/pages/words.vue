@@ -122,7 +122,7 @@
             ref="answerInput"
             v-model="testInput"
             class="answer-input"
-            placeholder="Type the German word"
+            placeholder="der/die/das + word"
           />
           <button
             class="btn small"
@@ -138,6 +138,7 @@
             {{ lastResult.correct ? "Correct!" : "Wrong" }}
           </span>
           <span class="reveal-word">
+            {{ currentTestWord.gender }}
             {{ displaySingular(currentTestWord.raw) }}
             <span class="plural-badge" v-if="hasPlural(currentTestWord.raw)">{{
               pluralBadge(currentTestWord.raw)
@@ -222,16 +223,18 @@ function toggleMode() {
 }
 
 // --- Flatten JSON into a list with gender + unique key ---
-const flatWords = computed(() => {
+type FlatWord = {
+  gender: Gender;
+  raw: string;
+  translation: string;
+  key: string;
+};
+
+const flatWords = computed<FlatWord[]>(() => {
   if (!rawData.value) return [];
   const cats: Gender[] =
     category.value === "all" ? ["der", "die", "das"] : [category.value];
-  const list: {
-    gender: Gender;
-    raw: string;
-    translation: string;
-    key: string;
-  }[] = [];
+  const list: FlatWord[] = [];
   for (const g of cats) {
     (rawData.value[g] || []).forEach((entry) => {
       list.push({
@@ -302,14 +305,27 @@ function normalize(s: string) {
   return s
     .toLowerCase()
     .trim()
-    .replace(/ä/g, "ae")
-    .replace(/ö/g, "oe")
-    .replace(/ü/g, "ue")
+    .replace(/ä/g, "a")
+    .replace(/ö/g, "o")
+    .replace(/ü/g, "u")
+    .replace(/ae/g, "a")
+    .replace(/oe/g, "o")
+    .replace(/ue/g, "u")
     .replace(/ß/g, "ss");
 }
 
+// Shuffle once per test run so the order is never the same twice.
+function shuffle<T>(items: T[]): T[] {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 // --- Test mode: one word at a time ---
-const testWords = computed(() => flatWords.value);
+const testWords = ref<FlatWord[]>([]);
 const testIndex = ref(0);
 const testInput = ref("");
 const testResults = ref<
@@ -351,17 +367,15 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
 function submitTest() {
   if (!testInput.value.trim() || !currentTestWord.value) return;
 
-  let attempt = testInput.value.trim();
-  const lower = attempt.toLowerCase();
-  for (const a of ["der ", "die ", "das "]) {
-    if (lower.startsWith(a)) {
-      attempt = attempt.slice(a.length);
-      break;
-    }
-  }
+  // The answer must include the article: "der Hund", "die Katze", "das Haus".
+  const parts = testInput.value.trim().split(/\s+/);
+  const article = (parts[0] || "").toLowerCase();
+  const answer = parts.slice(1).join(" ");
 
   const target = parseWord(currentTestWord.value.raw).singular;
-  const isRight = normalize(attempt) === normalize(target);
+  const isRight =
+    article === currentTestWord.value.gender &&
+    normalize(answer) === normalize(target);
 
   lastResult.value = { correct: isRight };
   testResults.value.push({
@@ -380,6 +394,7 @@ function nextTestWord() {
 }
 
 function restartTest() {
+  testWords.value = shuffle(flatWords.value);
   testIndex.value = 0;
   testInput.value = "";
   testResults.value = [];
