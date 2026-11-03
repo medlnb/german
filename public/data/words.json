@@ -27,7 +27,9 @@
     { "word": "cousine*n", "translation": "female cousin" },
     { "word": "eltern*", "translation": "parents" },
     { "word": "geschwister*", "translation": "siblings" },
-    { "word": "frau*en", "translation": "wife" }
+    { "word": "ehefrau*en", "translation": "wife" },
+    { "word": "großmutter*:", "translation": "grandmother" },
+    { "word": "großeltern*", "translation": "grandparents" }
   ],
   "der": [
     { "word": "brief*e", "translation": "letter" },
@@ -41,6 +43,7 @@
     { "word": "opa*s", "translation": "grandpa" },
     { "word": "onkel*:", "translation": "uncle" },
     { "word": "cousin*s", "translation": "male cousin" },
-    { "word": "mann*(:)er", "translation": "husband" }
+    { "word": "ehemann*(:)er", "translation": "husband" },
+    { "word": "großvater*:", "translation": "grandfather" }
   ]
 }
