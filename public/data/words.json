@@ -1,3 +1,4 @@
+
 {
   "das": [
     { "word": "problem*e", "translation": "problem" },
@@ -10,7 +11,8 @@
     { "word": "buch*(:)er", "translation": "book" },
     { "word": "haus*(:)er", "translation": "house" },
     { "word": "essen*", "translation": "food" },
-    { "word": "handy*s", "translation": "mobile phone" }
+    { "word": "handy*s", "translation": "mobile phone" },
+    { "word": "gl(:)ück*", "translation": "luck / happiness" }
   ],
   "die": [
     { "word": "zeit*en", "translation": "time" },
@@ -29,7 +31,13 @@
     { "word": "geschwister*", "translation": "siblings" },
     { "word": "ehefrau*en", "translation": "wife" },
     { "word": "großmutter*:", "translation": "grandmother" },
-    { "word": "großeltern*", "translation": "grandparents" }
+    { "word": "großeltern*", "translation": "grandparents" },
+    { "word": "tür*en", "translation": "door" },
+    { "word": "erde*n", "translation": "earth / soil" },
+    { "word": "sonne*n", "translation": "sun" },
+    { "word": "kirche*n", "translation": "church" },
+    { "word": "stadt*(:)e", "translation": "city / town" },
+    { "word": "kamera*s", "translation": "camera" }
   ],
   "der": [
     { "word": "brief*e", "translation": "letter" },
@@ -44,6 +52,80 @@
     { "word": "onkel*:", "translation": "uncle" },
     { "word": "cousin*s", "translation": "male cousin" },
     { "word": "ehemann*(:)er", "translation": "husband" },
-    { "word": "großvater*:", "translation": "grandfather" }
+    { "word": "großvater*:", "translation": "grandfather" },
+    { "word": "tisch*e", "translation": "table" },
+    { "word": "mond*e", "translation": "moon" },
+    { "word": "hund*e", "translation": "dog" },
+    { "word": "stuhl*(:)e", "translation": "chair" },
+    { "word": "job*s", "translation": "job" },
+    { "word": "lehrer*", "translation": "teacher" },
+    { "word": "zug*(:)e", "translation": "train" }
+  ],
+  "adjektive": [
+    { "word": "gut", "translation": "good" }
   ]
+}
+
+{
+  "das": [
+    { "word": "problem*e", "translation": "problem" },
+    { "word": "geld*", "translation": "money" },
+    { "word": "kind*er", "translation": "child" },
+    { "word": "auto*s", "translation": "car" },
+    { "word": "blut*", "translation": "blood" },
+    { "word": "fenster*", "translation": "window" },
+    { "word": "wasser*", "translation": "water" },
+    { "word": "buch*(:)er", "translation": "book" },
+    { "word": "haus*(:)er", "translation": "house" },
+    { "word": "essen*", "translation": "food" },
+    { "word": "handy*s", "translation": "mobile phone" },
+    { "word": "gl(:)ück*", "translation": "luck / happiness" }
+  ],
+  "die": [
+    { "word": "zeit*en", "translation": "time" },
+    { "word": "cola*s", "translation": "cola" },
+    { "word": "milch*", "translation": "milk" },
+    { "word": "katze*n", "translation": "cat" },
+    { "word": "frau*en", "translation": "woman" },
+    { "word": "pizza*s", "translation": "pizza" },
+    { "word": "mutter*:", "translation": "mother" },
+    { "word": "schwester*n", "translation": "sister" },
+    { "word": "tochter*:", "translation": "daughter" },
+    { "word": "oma*s", "translation": "grandma" },
+    { "word": "tante*n", "translation": "aunt" },
+    { "word": "cousine*n", "translation": "female cousin" },
+    { "word": "eltern*", "translation": "parents" },
+    { "word": "geschwister*", "translation": "siblings" },
+    { "word": "ehefrau*en", "translation": "wife" },
+    { "word": "großmutter*:", "translation": "grandmother" },
+    { "word": "großeltern*", "translation": "grandparents" },
+    { "word": "tür*en", "translation": "door" },
+    { "word": "erde*n", "translation": "earth / soil" },
+    { "word": "sonne*n", "translation": "sun" },
+    { "word": "kirche*n", "translation": "church" },
+    { "word": "stadt*(:)e", "translation": "city / town" },
+    { "word": "kamera*s", "translation": "camera" }
+  ],
+  "der": [
+    { "word": "brief*e", "translation": "letter" },
+    { "word": "kaffee*s", "translation": "coffee" },
+    { "word": "bus*se", "translation": "bus" },
+    { "word": "mann*(:)er", "translation": "man" },
+    { "word": "film*e", "translation": "film / movie" },
+    { "word": "vater*:", "translation": "father" },
+    { "word": "bruder*:", "translation": "brother" },
+    { "word": "sohn*(:)e", "translation": "son" },
+    { "word": "opa*s", "translation": "grandpa" },
+    { "word": "onkel*:", "translation": "uncle" },
+    { "word": "cousin*s", "translation": "male cousin" },
+    { "word": "ehemann*(:)er", "translation": "husband" },
+    { "word": "großvater*:", "translation": "grandfather" },
+    { "word": "tisch*e", "translation": "table" },
+    { "word": "mond*e", "translation": "moon" },
+    { "word": "hund*e", "translation": "dog" },
+    { "word": "stuhl*(:)e", "translation": "chair" },
+    { "word": "job*s", "translation": "job" },
+    { "word": "lehrer*", "translation": "teacher" },
+    { "word": "zug*(:)e", "translation": "train" }
+  ],
 }
