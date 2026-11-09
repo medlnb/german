@@ -18,6 +18,13 @@
       >
         🔤 Verben
       </NuxtLink>
+      <NuxtLink
+        to="/others"
+        class="nav-link"
+        :class="{ active: route.path === '/others' }"
+      >
+        🧩 Andere
+      </NuxtLink>
     </nav>
     <main>
       <slot />

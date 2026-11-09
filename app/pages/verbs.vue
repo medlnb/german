@@ -38,6 +38,13 @@
       >
         {{ hideWord ? "Show Word" : "Hide Word" }}
       </button>
+      <button
+        class="btn small"
+        @click="nextPageSize"
+        v-if="!memorizeMode"
+      >
+        Per page: {{ pageSize }}
+      </button>
       <button class="btn small" @click="toggleMode">
         Mode: {{ memorizeMode ? "Test" : "View" }}
       </button>
@@ -218,6 +225,7 @@ import {
   onBeforeUnmount,
   nextTick,
 } from "vue";
+import { usePageSize } from "~/composables/usePageSize";
 
 type Conjugation = Record<string, string>;
 type VerbEntry = {
@@ -241,8 +249,16 @@ const hideWord = ref(false);
 const memorizeMode = ref(false);
 
 const page = ref(1);
-const pageSize = 8;
+const { pageSize, nextPageSize } = usePageSize(
+  "german:pageSize:verbs",
+  8,
+  [8, 16, 32, 100],
+);
 const expanded = ref<Set<string>>(new Set());
+
+watch(pageSize, () => {
+  page.value = 1;
+});
 
 const leftPronouns = ["ich", "du", "er/sie/es"];
 const rightPronouns = ["wir", "ihr", "sie/Sie"];
@@ -298,11 +314,11 @@ const flatVerbs = computed(() => {
 });
 
 const totalPages = computed(() =>
-  Math.max(1, Math.ceil(flatVerbs.value.length / pageSize)),
+  Math.max(1, Math.ceil(flatVerbs.value.length / pageSize.value)),
 );
 const pagedVerbs = computed(() => {
-  const start = (page.value - 1) * pageSize;
-  return flatVerbs.value.slice(start, start + pageSize);
+  const start = (page.value - 1) * pageSize.value;
+  return flatVerbs.value.slice(start, start + pageSize.value);
 });
 
 function capitalize(s: string) {

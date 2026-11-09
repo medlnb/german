@@ -19,6 +19,13 @@
       >
         {{ hideWord ? "Show Word" : "Hide Word" }}
       </button>
+      <button
+        class="btn small"
+        @click="nextPageSize"
+        v-if="!memorizeMode"
+      >
+        Per page: {{ pageSize }}
+      </button>
       <button class="btn small" @click="toggleMode">
         Mode: {{ memorizeMode ? "Test" : "View" }}
       </button>
@@ -173,6 +180,7 @@ import {
   onBeforeUnmount,
   nextTick,
 } from "vue";
+import { usePageSize } from "~/composables/usePageSize";
 
 const hideWord = ref(false);
 
@@ -191,7 +199,15 @@ const showTranslations = ref(true);
 const memorizeMode = ref(false);
 
 const page = ref(1);
-const pageSize = 10;
+const { pageSize, nextPageSize } = usePageSize(
+  "german:pageSize:words",
+  10,
+  [10, 20, 50, 100],
+);
+
+watch(pageSize, () => {
+  page.value = 1;
+});
 
 onMounted(async () => {
   try {
@@ -250,23 +266,31 @@ const flatWords = computed<FlatWord[]>(() => {
 
 // --- View mode pagination ---
 const totalPages = computed(() =>
-  Math.max(1, Math.ceil(flatWords.value.length / pageSize)),
+  Math.max(1, Math.ceil(flatWords.value.length / pageSize.value)),
 );
 const pagedWords = computed(() => {
-  const start = (page.value - 1) * pageSize;
-  return flatWords.value.slice(start, start + pageSize);
+  const start = (page.value - 1) * pageSize.value;
+  return flatWords.value.slice(start, start + pageSize.value);
 });
 
 // --- Plural parser ---
+// Notation: "*" separates the stem from the plural suffix, "(:)" marks an
+// umlaut before a suffix, and a trailing ":" marks an umlaut-only plural.
+// An inline "(:)" can also sit inside the singular (gl(:)ück) — it is a
+// marker, not part of the word, so strip it before comparing/displaying.
+function stripMarkers(text: string) {
+  return text.replace(/\(:\)/g, "").replace(/:/g, "");
+}
 function parseWord(raw: string) {
   if (!raw.includes("*")) {
     return {
-      singular: raw,
+      singular: stripMarkers(raw),
       plural: null as string | null,
       pluralMark: null as string | null,
     };
   }
-  const [stem, rest] = raw.split("*");
+  const [rawStem, rest] = raw.split("*");
+  const stem = stripMarkers(rawStem);
   if (rest.startsWith("(:)")) {
     const suffix = rest.slice(3);
     return {
@@ -296,7 +320,8 @@ function pluralBadge(raw: string) {
   return p.pluralMark ? "+" + p.pluralMark : "";
 }
 function hasPlural(raw: string) {
-  return raw.includes("*");
+  const [, rest = ""] = raw.split("*");
+  return rest.length > 0;
 }
 function isArabic(text: string) {
   return /[\u0600-\u06FF]/.test(text);
@@ -305,6 +330,7 @@ function normalize(s: string) {
   return s
     .toLowerCase()
     .trim()
+    .replace(/[():]/g, "")
     .replace(/ä/g, "a")
     .replace(/ö/g, "o")
     .replace(/ü/g, "u")
