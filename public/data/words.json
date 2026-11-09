@@ -11,7 +11,10 @@
     { "word": "haus*(:)er", "translation": "house" },
     { "word": "essen*", "translation": "food" },
     { "word": "handy*s", "translation": "mobile phone" },
-    { "word": "gl(:)ück*", "translation": "luck / happiness" }
+    { "word": "gl(:)ück*", "translation": "luck / happiness" },
+    { "word": "fahrrad*(:)er", "translation": "bicycle" },
+    { "word": "kino*s", "translation": "cinema" },
+    { "word": "theater*", "translation": "theater" }
   ],
   "die": [
     { "word": "zeit*en", "translation": "time" },
@@ -36,7 +39,10 @@
     { "word": "sonne*n", "translation": "sun" },
     { "word": "kirche*n", "translation": "church" },
     { "word": "stadt*(:)e", "translation": "city / town" },
-    { "word": "kamera*s", "translation": "camera" }
+    { "word": "kamera*s", "translation": "camera" },
+    { "word": "musik*", "translation": "music" },
+    { "word": "gitarre*n", "translation": "guitar" },
+    { "word": "welt*en", "translation": "world" }
   ],
   "der": [
     { "word": "brief*e", "translation": "letter" },
@@ -58,6 +64,7 @@
     { "word": "stuhl*(:)e", "translation": "chair" },
     { "word": "job*s", "translation": "job" },
     { "word": "lehrer*", "translation": "teacher" },
-    { "word": "zug*(:)e", "translation": "train" }
+    { "word": "zug*(:)e", "translation": "train" },
+    { "word": "sport*", "translation": "sport" }
   ]
 }
