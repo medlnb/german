@@ -1,27 +1,6 @@
 <template>
   <div class="content">
-    <h1 class="page-title">
-      Andere Wörter <span class="gender-tag">{{ categoryLabel(category) }}</span>
-    </h1>
-
-    <div class="buttons top">
-      <button
-        v-for="c in categoryOptions"
-        :key="c"
-        class="btn small"
-        :class="{ active: category === c }"
-        @click="setCategory(c)"
-      >
-        {{ categoryLabel(c) }}
-      </button>
-    </div>
-
-    <p
-      class="category-desc"
-      v-if="category !== 'all' && categoriesMeta[category]"
-    >
-      {{ categoriesMeta[category] }}
-    </p>
+    <h1 class="page-title">Andere Wörter</h1>
 
     <div class="buttons top">
       <button
@@ -55,20 +34,10 @@
 
     <!-- VIEW MODE -->
     <template v-if="!memorizeMode">
-      <p v-if="pagedWords.length === 0" class="hint">
-        No words in this category.
-      </p>
+      <p v-if="pagedWords.length === 0" class="hint">No words.</p>
 
       <div v-else class="word-list">
-        <div
-          v-for="item in pagedWords"
-          :key="item.category + ':' + item.word"
-          class="word-row"
-          :class="'cat-' + categorySlug(item.category)"
-        >
-          <span class="gender-badge" :class="'cat-' + categorySlug(item.category)">
-            {{ categoryAbbr(item.category) }}
-          </span>
+        <div v-for="item in pagedWords" :key="item.word" class="word-row">
           <span class="word-text" :class="{ dots: hideWord }">
             {{ hideWord ? "••••" : item.word }}
           </span>
@@ -101,14 +70,12 @@
 
     <!-- TEST MODE -->
     <template v-else>
-      <div v-if="testWords.length === 0" class="hint">
-        No words in this category.
-      </div>
+      <div v-if="testWords.length === 0" class="hint">No words.</div>
 
       <div v-else-if="testIndex >= testWords.length" class="test-done">
         <p class="hint">
           🎉 Done! {{ testedCount }} word{{ testedCount === 1 ? "" : "s" }}
-          tested ({{ categoryLabel(category) }}).
+          tested.
         </p>
         <p class="hint">
           Correct: {{ correctCount }} / {{ testedCount }}
@@ -121,8 +88,7 @@
 
       <div v-else class="test-panel">
         <div class="test-counter">
-          {{ remainingCount }} left · Shift+Enter to skip · filter:
-          {{ categoryLabel(category) }}
+          {{ remainingCount }} left · Shift+Enter to skip
         </div>
 
         <div
@@ -130,9 +96,6 @@
           :dir="isArabic(currentTestWord.translation) ? 'rtl' : 'ltr'"
         >
           {{ currentTestWord.translation }}
-        </div>
-        <div class="test-cat-hint">
-          {{ currentTestWord.category }}
         </div>
 
         <div class="test-input-row" v-if="!lastResult">
@@ -170,12 +133,6 @@
           class="history-row"
           :class="r.skipped ? 'skipped-row' : r.correct ? 'correct-row' : 'wrong-row'"
         >
-          <span
-            class="gender-badge"
-            :class="'cat-' + categorySlug(r.category)"
-          >
-            {{ categoryAbbr(r.category) }}
-          </span>
           <div class="history-body">
             <span class="word-text">{{ r.word }}</span>
             <span class="history-skip" v-if="r.skipped">Skipped</span>
@@ -206,10 +163,8 @@ import { usePageSize } from "~/composables/usePageSize";
 type OtherEntry = {
   word: string;
   translation: string;
-  category: string;
 };
 type OtherData = {
-  categories: Record<string, string>;
   words: OtherEntry[];
 };
 
@@ -217,7 +172,6 @@ const rawData = ref<OtherData | null>(null);
 const loading = ref(true);
 const error = ref("");
 
-const category = ref<string>("all");
 const showTranslations = ref(true);
 const hideWord = ref(false);
 const memorizeMode = ref(false);
@@ -233,24 +187,6 @@ watch(pageSize, () => {
   page.value = 1;
 });
 
-const categoryAbbrMap: Record<string, string> = {
-  Adjektive: "adj",
-  Adverbien: "adv",
-  Präpositionen: "präp",
-  Pronomen: "pron",
-  Konjunktionen: "konj",
-  Partikeln: "part",
-};
-
-const categorySlugMap: Record<string, string> = {
-  Adjektive: "adj",
-  Adverbien: "adv",
-  Präpositionen: "praep",
-  Pronomen: "pron",
-  Konjunktionen: "konj",
-  Partikeln: "part",
-};
-
 onMounted(async () => {
   try {
     const res = await fetch("/data/others.json");
@@ -263,51 +199,21 @@ onMounted(async () => {
   }
 });
 
-const categoriesMeta = computed(() => rawData.value?.categories || {});
-const categoryOptions = computed(() => [
-  "all",
-  ...Object.keys(categoriesMeta.value),
-]);
-
-function categoryLabel(c: string) {
-  return c === "all" ? "All" : c;
-}
-
-function categoryAbbr(c: string) {
-  return categoryAbbrMap[c] || c.slice(0, 4).toLowerCase();
-}
-
-function categorySlug(c: string) {
-  return categorySlugMap[c] || "other";
-}
-
-function setCategory(c: string) {
-  category.value = c;
-  page.value = 1;
-  restartTest();
-}
-
 function toggleMode() {
   memorizeMode.value = !memorizeMode.value;
   page.value = 1;
   restartTest();
 }
 
-// Filtered by the active category — drives BOTH view mode's list and test mode's quiz set
-const flatWords = computed<OtherEntry[]>(() => {
-  if (!rawData.value) return [];
-  const all = rawData.value.words;
-  return category.value === "all"
-    ? all
-    : all.filter((w) => w.category === category.value);
-});
+// Drives BOTH view mode's list and test mode's quiz set
+const allWords = computed<OtherEntry[]>(() => rawData.value?.words || []);
 
 const totalPages = computed(() =>
-  Math.max(1, Math.ceil(flatWords.value.length / pageSize)),
+  Math.max(1, Math.ceil(allWords.value.length / pageSize)),
 );
 const pagedWords = computed(() => {
   const start = (page.value - 1) * pageSize;
-  return flatWords.value.slice(start, start + pageSize);
+  return allWords.value.slice(start, start + pageSize);
 });
 
 function isArabic(text: string) {
@@ -336,7 +242,7 @@ function shuffle<T>(items: T[]): T[] {
   return arr;
 }
 
-// --- Test mode: drawn from flatWords (so it respects the active filter), shuffled per run ---
+// --- Test mode: drawn from allWords, shuffled per run ---
 const testWords = ref<OtherEntry[]>([]);
 const testIndex = ref(0);
 const testInput = ref("");
@@ -344,7 +250,6 @@ const testResults = ref<
   {
     word: string;
     translation: string;
-    category: string;
     correct: boolean;
     answer: string;
     skipped?: boolean;
@@ -421,7 +326,6 @@ function submitTest() {
   testResults.value.push({
     word: target.word,
     translation: target.translation,
-    category: target.category,
     correct: isRight,
     answer: typed,
   });
@@ -432,7 +336,6 @@ function skipTestWord() {
   testResults.value.push({
     word: currentTestWord.value.word,
     translation: currentTestWord.value.translation,
-    category: currentTestWord.value.category,
     correct: false,
     answer: "",
     skipped: true,
@@ -448,7 +351,7 @@ function nextTestWord() {
 }
 
 function restartTest() {
-  testWords.value = shuffle(flatWords.value);
+  testWords.value = shuffle(allWords.value);
   testIndex.value = 0;
   testInput.value = "";
   testResults.value = [];
@@ -456,8 +359,8 @@ function restartTest() {
   focusInput();
 }
 
-// Whenever the filtered list changes (category switch, data load), reset the quiz
-watch(flatWords, restartTest);
+// Whenever the word list changes (data load), reset the quiz
+watch(allWords, restartTest);
 </script>
 
 <style>
@@ -477,17 +380,6 @@ watch(flatWords, restartTest);
   text-align: center;
   color: #e6eef8;
 }
-.gender-tag {
-  font-size: 0.55em;
-  opacity: 0.6;
-  font-weight: 500;
-}
-.category-desc {
-  text-align: center;
-  font-size: 0.8rem;
-  color: rgba(230, 238, 248, 0.55);
-  margin: -0.25rem 0 0.6rem;
-}
 .buttons.top {
   display: flex;
   gap: 0.5rem;
@@ -504,10 +396,6 @@ watch(flatWords, restartTest);
   border: 1px solid rgba(255, 255, 255, 0.12);
   cursor: pointer;
   font-weight: 600;
-}
-.btn.active {
-  background: rgba(79, 140, 255, 0.3);
-  border-color: rgba(79, 140, 255, 0.6);
 }
 
 .word-list {
@@ -526,53 +414,6 @@ watch(flatWords, restartTest);
   padding: 0.4rem 0.6rem;
   font-size: 0.9rem;
   color: #e6eef8;
-}
-.word-row.cat-adj {
-  border-left-color: #4f8cff;
-}
-.word-row.cat-adv {
-  border-left-color: #7ce0c3;
-}
-.word-row.cat-praep {
-  border-left-color: #f4c95d;
-}
-.word-row.cat-pron {
-  border-left-color: #a685ff;
-}
-.word-row.cat-konj {
-  border-left-color: #ff9d5c;
-}
-.word-row.cat-part {
-  border-left-color: #ff6b9d;
-}
-
-.gender-badge {
-  flex: 0 0 auto;
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  padding: 0.1rem 0.35rem;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(230, 238, 248, 0.75);
-}
-.gender-badge.cat-adj {
-  color: #4f8cff;
-}
-.gender-badge.cat-adv {
-  color: #7ce0c3;
-}
-.gender-badge.cat-praep {
-  color: #f4c95d;
-}
-.gender-badge.cat-pron {
-  color: #a685ff;
-}
-.gender-badge.cat-konj {
-  color: #ff9d5c;
-}
-.gender-badge.cat-part {
-  color: #ff6b9d;
 }
 
 .word-text {
@@ -634,11 +475,6 @@ watch(flatWords, restartTest);
   font-weight: 700;
   color: #e6eef8;
   text-align: center;
-}
-.test-cat-hint {
-  font-size: 0.75rem;
-  color: rgba(230, 238, 248, 0.45);
-  margin-bottom: 0.3rem;
 }
 .test-input-row {
   display: flex;
