@@ -512,6 +512,45 @@
         "ihr": "fahrt",
         "sie/Sie": "fahren"
       }
+    },
+    {
+      "infinitive": "schlafen",
+      "category": "vowel_change",
+      "translation": "to sleep",
+      "conjugation": {
+        "ich": "schlafe",
+        "du": "schläfst",
+        "er/sie/es": "schläft",
+        "wir": "schlafen",
+        "ihr": "schlaft",
+        "sie/Sie": "schlafen"
+      }
+    },
+    {
+      "infinitive": "sehen",
+      "category": "vowel_change",
+      "translation": "to see",
+      "conjugation": {
+        "ich": "sehe",
+        "du": "siehst",
+        "er/sie/es": "sieht",
+        "wir": "sehen",
+        "ihr": "seht",
+        "sie/Sie": "sehen"
+      }
+    },
+    {
+      "infinitive": "lügen",
+      "category": "regular",
+      "translation": "to lie (tell an untruth)",
+      "conjugation": {
+        "ich": "lüge",
+        "du": "lügst",
+        "er/sie/es": "lügt",
+        "wir": "lügen",
+        "ihr": "lügt",
+        "sie/Sie": "lügen"
+      }
     }
   ],
   "adjektive": [
