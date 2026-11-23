@@ -107,13 +107,14 @@
 
       <div v-else-if="testIndex >= testWords.length" class="test-done">
         <p class="hint">
-          🎉 Done! {{ testResults.length }} word{{
-            testResults.length === 1 ? "" : "s"
-          }}
+          🎉 Done! {{ testedCount }} word{{ testedCount === 1 ? "" : "s" }}
           tested ({{ categoryLabel(category) }}).
         </p>
         <p class="hint">
-          Correct: {{ correctCount }} / {{ testResults.length }}
+          Correct: {{ correctCount }} / {{ testedCount }}
+        </p>
+        <p class="hint" v-if="skippedCount">
+          Skipped: {{ skippedCount }}
         </p>
         <button class="btn small" @click="restartTest">Restart</button>
       </div>
@@ -167,7 +168,7 @@
           v-for="(r, i) in [...testResults].reverse()"
           :key="i"
           class="history-row"
-          :class="r.correct ? 'correct-row' : 'wrong-row'"
+          :class="r.skipped ? 'skipped-row' : r.correct ? 'correct-row' : 'wrong-row'"
         >
           <span
             class="gender-badge"
@@ -177,11 +178,14 @@
           </span>
           <div class="history-body">
             <span class="word-text">{{ r.word }}</span>
-            <span class="history-answer" v-if="!r.correct">
+            <span class="history-skip" v-if="r.skipped">Skipped</span>
+            <span class="history-answer" v-else-if="!r.correct">
               You wrote: “{{ r.answer }}”
             </span>
           </div>
-          <span class="history-mark">{{ r.correct ? "✓" : "✗" }}</span>
+          <span class="history-mark">{{
+            r.skipped ? "–" : r.correct ? "✓" : "✗"
+          }}</span>
         </div>
       </div>
     </template>
@@ -343,6 +347,7 @@ const testResults = ref<
     category: string;
     correct: boolean;
     answer: string;
+    skipped?: boolean;
   }[]
 >([]);
 const lastResult = ref<{ correct: boolean; answer: string } | null>(null);
@@ -351,6 +356,12 @@ const currentTestWord = computed(() => testWords.value[testIndex.value]);
 const remainingCount = computed(() => testWords.value.length - testIndex.value);
 const correctCount = computed(
   () => testResults.value.filter((r) => r.correct).length,
+);
+const skippedCount = computed(
+  () => testResults.value.filter((r) => r.skipped).length,
+);
+const testedCount = computed(
+  () => testResults.value.length - skippedCount.value,
 );
 
 // --- Input focus + Enter key handling ---
@@ -367,10 +378,11 @@ function onKeydown(e: KeyboardEvent) {
   if (e.key !== "Enter" || e.repeat || e.isComposing) return;
   if (!memorizeMode.value || !currentTestWord.value) return;
 
-  // Shift+Enter skips the current word without recording it.
+  // Shift+Enter skips the current word; it is recorded as skipped.
   if (e.shiftKey) {
     e.preventDefault();
-    nextTestWord();
+    if (lastResult.value) nextTestWord();
+    else skipTestWord();
     return;
   }
 
@@ -413,6 +425,19 @@ function submitTest() {
     correct: isRight,
     answer: typed,
   });
+}
+
+function skipTestWord() {
+  if (!currentTestWord.value) return;
+  testResults.value.push({
+    word: currentTestWord.value.word,
+    translation: currentTestWord.value.translation,
+    category: currentTestWord.value.category,
+    correct: false,
+    answer: "",
+    skipped: true,
+  });
+  nextTestWord();
 }
 
 function nextTestWord() {
@@ -693,6 +718,17 @@ watch(flatWords, restartTest);
   font-size: 0.78rem;
   font-weight: 500;
   color: #ff8b8b;
+}
+.history-row.skipped-row {
+  border-left: 3px solid #f4c95d;
+}
+.history-row.skipped-row .history-mark,
+.history-skip {
+  color: #f4c95d;
+  font-weight: 500;
+}
+.history-skip {
+  font-size: 0.78rem;
 }
 .test-done {
   text-align: center;

@@ -142,13 +142,14 @@
 
       <div v-else-if="testIndex >= testVerbs.length" class="test-done">
         <p class="hint">
-          🎉 Done! {{ testResults.length }} verb{{
-            testResults.length === 1 ? "" : "s"
-          }}
+          🎉 Done! {{ testedCount }} verb{{ testedCount === 1 ? "" : "s" }}
           tested ({{ categoryLabel(category) }}).
         </p>
         <p class="hint">
-          Correct: {{ correctCount }} / {{ testResults.length }}
+          Correct: {{ correctCount }} / {{ testedCount }}
+        </p>
+        <p class="hint" v-if="skippedCount">
+          Skipped: {{ skippedCount }}
         </p>
         <button class="btn small" @click="restartTest">Restart</button>
       </div>
@@ -204,7 +205,7 @@
           v-for="(r, i) in [...testResults].reverse()"
           :key="i"
           class="history-row"
-          :class="r.correct ? 'correct-row' : 'wrong-row'"
+          :class="r.skipped ? 'skipped-row' : r.correct ? 'correct-row' : 'wrong-row'"
         >
           <span
             class="gender-badge"
@@ -214,11 +215,14 @@
           </span>
           <div class="history-body">
             <span class="word-text">{{ capitalize(r.infinitive) }}</span>
-            <span class="history-answer" v-if="!r.correct">
+            <span class="history-skip" v-if="r.skipped">Skipped</span>
+            <span class="history-answer" v-else-if="!r.correct">
               You wrote: “{{ r.answer }}”
             </span>
           </div>
-          <span class="history-mark">{{ r.correct ? "✓" : "✗" }}</span>
+          <span class="history-mark">{{
+            r.skipped ? "–" : r.correct ? "✓" : "✗"
+          }}</span>
         </div>
       </div>
     </template>
@@ -372,7 +376,7 @@ const testVerbs = ref<VerbEntry[]>([]);
 const testIndex = ref(0);
 const testInput = ref("");
 const testResults = ref<
-  { infinitive: string; correct: boolean; answer: string }[]
+  { infinitive: string; correct: boolean; answer: string; skipped?: boolean }[]
 >([]);
 const lastResult = ref<{ correct: boolean; answer: string } | null>(null);
 
@@ -380,6 +384,12 @@ const currentTestVerb = computed(() => testVerbs.value[testIndex.value]);
 const remainingCount = computed(() => testVerbs.value.length - testIndex.value);
 const correctCount = computed(
   () => testResults.value.filter((r) => r.correct).length,
+);
+const skippedCount = computed(
+  () => testResults.value.filter((r) => r.skipped).length,
+);
+const testedCount = computed(
+  () => testResults.value.length - skippedCount.value,
 );
 
 // --- Input focus + Enter key handling ---
@@ -396,10 +406,11 @@ function onKeydown(e: KeyboardEvent) {
   if (e.key !== "Enter" || e.repeat || e.isComposing) return;
   if (!memorizeMode.value || !currentTestVerb.value) return;
 
-  // Shift+Enter skips the current verb without recording it.
+  // Shift+Enter skips the current verb; it is recorded as skipped.
   if (e.shiftKey) {
     e.preventDefault();
-    nextTestVerb();
+    if (lastResult.value) nextTestVerb();
+    else skipTestVerb();
     return;
   }
 
@@ -425,6 +436,17 @@ function submitTest() {
     correct: isRight,
     answer: typed,
   });
+}
+
+function skipTestVerb() {
+  if (!currentTestVerb.value) return;
+  testResults.value.push({
+    infinitive: currentTestVerb.value.infinitive,
+    correct: false,
+    answer: "",
+    skipped: true,
+  });
+  nextTestVerb();
 }
 
 function nextTestVerb() {
@@ -734,6 +756,17 @@ watch(flatVerbs, restartTest);
   font-size: 0.78rem;
   font-weight: 500;
   color: #ff8b8b;
+}
+.history-row.skipped-row {
+  border-left: 3px solid #f4c95d;
+}
+.history-row.skipped-row .history-mark,
+.history-skip {
+  color: #f4c95d;
+  font-weight: 500;
+}
+.history-skip {
+  font-size: 0.78rem;
 }
 .test-done {
   text-align: center;
