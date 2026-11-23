@@ -209,11 +209,11 @@ function toggleMode() {
 const allWords = computed<OtherEntry[]>(() => rawData.value?.words || []);
 
 const totalPages = computed(() =>
-  Math.max(1, Math.ceil(allWords.value.length / pageSize)),
+  Math.max(1, Math.ceil(allWords.value.length / pageSize.value)),
 );
 const pagedWords = computed(() => {
-  const start = (page.value - 1) * pageSize;
-  return allWords.value.slice(start, start + pageSize);
+  const start = (page.value - 1) * pageSize.value;
+  return allWords.value.slice(start, start + pageSize.value);
 });
 
 function isArabic(text: string) {
