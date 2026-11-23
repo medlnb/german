@@ -115,7 +115,9 @@
       </div>
 
       <div v-else class="test-panel">
-        <div class="test-counter">{{ remainingCount }} left</div>
+        <div class="test-counter">
+          {{ remainingCount }} left · Shift+Enter to skip
+        </div>
 
         <div
           class="test-translation"
@@ -151,6 +153,9 @@
               pluralBadge(currentTestWord.raw)
             }}</span>
           </span>
+          <span class="your-answer" v-if="!lastResult.correct">
+            You wrote: “{{ lastResult.answer }}”
+          </span>
           <button class="btn small" @click="nextTestWord">Next ›</button>
         </div>
       </div>
@@ -163,7 +168,12 @@
           :class="r.correct ? 'correct-row' : 'wrong-row'"
         >
           <span class="gender-badge">{{ r.gender }}</span>
-          <span class="word-text">{{ displaySingular(r.raw) }}</span>
+          <div class="history-body">
+            <span class="word-text">{{ displaySingular(r.raw) }}</span>
+            <span class="history-answer" v-if="!r.correct">
+              You wrote: “{{ r.answer }}”
+            </span>
+          </div>
           <span class="history-mark">{{ r.correct ? "✓" : "✗" }}</span>
         </div>
       </div>
@@ -355,9 +365,15 @@ const testWords = ref<FlatWord[]>([]);
 const testIndex = ref(0);
 const testInput = ref("");
 const testResults = ref<
-  { key: string; raw: string; gender: Gender; correct: boolean }[]
+  {
+    key: string;
+    raw: string;
+    gender: Gender;
+    correct: boolean;
+    answer: string;
+  }[]
 >([]);
-const lastResult = ref<{ correct: boolean } | null>(null);
+const lastResult = ref<{ correct: boolean; answer: string } | null>(null);
 
 const currentTestWord = computed(() => testWords.value[testIndex.value]);
 const remainingCount = computed(() => testWords.value.length - testIndex.value);
@@ -379,6 +395,13 @@ function onKeydown(e: KeyboardEvent) {
   if (e.key !== "Enter" || e.repeat || e.isComposing) return;
   if (!memorizeMode.value || !currentTestWord.value) return;
 
+  // Shift+Enter skips the current word without recording it.
+  if (e.shiftKey) {
+    e.preventDefault();
+    nextTestWord();
+    return;
+  }
+
   if (lastResult.value) {
     e.preventDefault();
     nextTestWord();
@@ -393,8 +416,9 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
 function submitTest() {
   if (!testInput.value.trim() || !currentTestWord.value) return;
 
+  const typed = testInput.value.trim();
   // The answer must include the article: "der Hund", "die Katze", "das Haus".
-  const parts = testInput.value.trim().split(/\s+/);
+  const parts = typed.split(/\s+/);
   const article = (parts[0] || "").toLowerCase();
   const answer = parts.slice(1).join(" ");
 
@@ -403,12 +427,13 @@ function submitTest() {
     article === currentTestWord.value.gender &&
     normalize(answer) === normalize(target);
 
-  lastResult.value = { correct: isRight };
+  lastResult.value = { correct: isRight, answer: typed };
   testResults.value.push({
     key: currentTestWord.value.key,
     raw: currentTestWord.value.raw,
     gender: currentTestWord.value.gender,
     correct: isRight,
+    answer: typed,
   });
 }
 
@@ -635,6 +660,22 @@ watch(flatWords, restartTest);
 .history-mark {
   margin-left: auto;
   font-weight: 700;
+}
+.history-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.history-body .word-text {
+  flex: 0 1 auto;
+}
+.history-answer,
+.your-answer {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #ff8b8b;
 }
 .test-done {
   text-align: center;

@@ -155,7 +155,8 @@
 
       <div v-else class="test-panel">
         <div class="test-counter">
-          {{ remainingCount }} left · filter: {{ categoryLabel(category) }}
+          {{ remainingCount }} left · Shift+Enter to skip · filter:
+          {{ categoryLabel(category) }}
         </div>
 
         <div
@@ -191,6 +192,9 @@
           <span class="reveal-word">{{
             capitalize(currentTestVerb.infinitive)
           }}</span>
+          <span class="your-answer" v-if="!lastResult.correct">
+            You wrote: “{{ lastResult.answer }}”
+          </span>
           <button class="btn small" @click="nextTestVerb">Next ›</button>
         </div>
       </div>
@@ -208,7 +212,12 @@
           >
             {{ endingLetter(r.infinitive) }}
           </span>
-          <span class="word-text">{{ capitalize(r.infinitive) }}</span>
+          <div class="history-body">
+            <span class="word-text">{{ capitalize(r.infinitive) }}</span>
+            <span class="history-answer" v-if="!r.correct">
+              You wrote: “{{ r.answer }}”
+            </span>
+          </div>
           <span class="history-mark">{{ r.correct ? "✓" : "✗" }}</span>
         </div>
       </div>
@@ -362,8 +371,10 @@ function endingLetter(infinitive: string): string {
 const testVerbs = ref<VerbEntry[]>([]);
 const testIndex = ref(0);
 const testInput = ref("");
-const testResults = ref<{ infinitive: string; correct: boolean }[]>([]);
-const lastResult = ref<{ correct: boolean } | null>(null);
+const testResults = ref<
+  { infinitive: string; correct: boolean; answer: string }[]
+>([]);
+const lastResult = ref<{ correct: boolean; answer: string } | null>(null);
 
 const currentTestVerb = computed(() => testVerbs.value[testIndex.value]);
 const remainingCount = computed(() => testVerbs.value.length - testIndex.value);
@@ -385,6 +396,13 @@ function onKeydown(e: KeyboardEvent) {
   if (e.key !== "Enter" || e.repeat || e.isComposing) return;
   if (!memorizeMode.value || !currentTestVerb.value) return;
 
+  // Shift+Enter skips the current verb without recording it.
+  if (e.shiftKey) {
+    e.preventDefault();
+    nextTestVerb();
+    return;
+  }
+
   if (lastResult.value) {
     e.preventDefault();
     nextTestVerb();
@@ -398,12 +416,14 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
 
 function submitTest() {
   if (!testInput.value.trim() || !currentTestVerb.value) return;
+  const typed = testInput.value.trim();
   const isRight =
-    normalize(testInput.value) === normalize(currentTestVerb.value.infinitive);
-  lastResult.value = { correct: isRight };
+    normalize(typed) === normalize(currentTestVerb.value.infinitive);
+  lastResult.value = { correct: isRight, answer: typed };
   testResults.value.push({
     infinitive: currentTestVerb.value.infinitive,
     correct: isRight,
+    answer: typed,
   });
 }
 
@@ -698,6 +718,22 @@ watch(flatVerbs, restartTest);
 .history-mark {
   margin-left: auto;
   font-weight: 700;
+}
+.history-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.history-body .word-text {
+  flex: 0 1 auto;
+}
+.history-answer,
+.your-answer {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #ff8b8b;
 }
 .test-done {
   text-align: center;

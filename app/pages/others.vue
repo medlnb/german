@@ -120,7 +120,8 @@
 
       <div v-else class="test-panel">
         <div class="test-counter">
-          {{ remainingCount }} left · filter: {{ categoryLabel(category) }}
+          {{ remainingCount }} left · Shift+Enter to skip · filter:
+          {{ categoryLabel(category) }}
         </div>
 
         <div
@@ -154,6 +155,9 @@
             {{ lastResult.correct ? "Correct!" : "Wrong" }}
           </span>
           <span class="reveal-word">{{ currentTestWord.word }}</span>
+          <span class="your-answer" v-if="!lastResult.correct">
+            You wrote: “{{ lastResult.answer }}”
+          </span>
           <button class="btn small" @click="nextTestWord">Next ›</button>
         </div>
       </div>
@@ -171,7 +175,12 @@
           >
             {{ categoryAbbr(r.category) }}
           </span>
-          <span class="word-text">{{ r.word }}</span>
+          <div class="history-body">
+            <span class="word-text">{{ r.word }}</span>
+            <span class="history-answer" v-if="!r.correct">
+              You wrote: “{{ r.answer }}”
+            </span>
+          </div>
           <span class="history-mark">{{ r.correct ? "✓" : "✗" }}</span>
         </div>
       </div>
@@ -328,9 +337,15 @@ const testWords = ref<OtherEntry[]>([]);
 const testIndex = ref(0);
 const testInput = ref("");
 const testResults = ref<
-  { word: string; translation: string; category: string; correct: boolean }[]
+  {
+    word: string;
+    translation: string;
+    category: string;
+    correct: boolean;
+    answer: string;
+  }[]
 >([]);
-const lastResult = ref<{ correct: boolean } | null>(null);
+const lastResult = ref<{ correct: boolean; answer: string } | null>(null);
 
 const currentTestWord = computed(() => testWords.value[testIndex.value]);
 const remainingCount = computed(() => testWords.value.length - testIndex.value);
@@ -352,6 +367,13 @@ function onKeydown(e: KeyboardEvent) {
   if (e.key !== "Enter" || e.repeat || e.isComposing) return;
   if (!memorizeMode.value || !currentTestWord.value) return;
 
+  // Shift+Enter skips the current word without recording it.
+  if (e.shiftKey) {
+    e.preventDefault();
+    nextTestWord();
+    return;
+  }
+
   if (lastResult.value) {
     e.preventDefault();
     nextTestWord();
@@ -366,8 +388,9 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
 function submitTest() {
   if (!testInput.value.trim() || !currentTestWord.value) return;
 
+  const typed = testInput.value.trim();
   const target = currentTestWord.value;
-  const attempt = normalize(testInput.value);
+  const attempt = normalize(typed);
 
   // Accept any word that carries exactly the same translation, so words
   // with a shared meaning (e.g. two words for "already") both count.
@@ -382,12 +405,13 @@ function submitTest() {
   }
 
   const isRight = accepted.has(attempt);
-  lastResult.value = { correct: isRight };
+  lastResult.value = { correct: isRight, answer: typed };
   testResults.value.push({
     word: target.word,
     translation: target.translation,
     category: target.category,
     correct: isRight,
+    answer: typed,
   });
 }
 
@@ -653,6 +677,22 @@ watch(flatWords, restartTest);
 .history-mark {
   margin-left: auto;
   font-weight: 700;
+}
+.history-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.history-body .word-text {
+  flex: 0 1 auto;
+}
+.history-answer,
+.your-answer {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #ff8b8b;
 }
 .test-done {
   text-align: center;
