@@ -14,7 +14,9 @@
     { "word": "gl(:)ück*", "translation": "luck / happiness" },
     { "word": "fahrrad*(:)er", "translation": "bicycle" },
     { "word": "kino*s", "translation": "cinema" },
-    { "word": "theater*", "translation": "theater" }
+    { "word": "theater*", "translation": "theater" },
+    { "word": "wetter*", "translation": "weather" },
+    { "word": "baby*s", "translation": "baby" }
   ],
   "die": [
     { "word": "zeit*en", "translation": "time" },
@@ -42,7 +44,10 @@
     { "word": "kamera*s", "translation": "camera" },
     { "word": "musik*", "translation": "music" },
     { "word": "gitarre*n", "translation": "guitar" },
-    { "word": "welt*en", "translation": "world" }
+    { "word": "welt*en", "translation": "world" },
+    { "word": "schule*n", "translation": "school" },
+    { "word": "universität*en", "translation": "university" },
+    { "word": "zeitung*en", "translation": "newspaper" }
   ],
   "der": [
     { "word": "brief*e", "translation": "letter" },
@@ -65,6 +70,10 @@
     { "word": "job*s", "translation": "job" },
     { "word": "lehrer*", "translation": "teacher" },
     { "word": "zug*(:)e", "translation": "train" },
-    { "word": "sport*", "translation": "sport" }
+    { "word": "sport*", "translation": "sport" },
+    { "word": "gast*(:)e", "translation": "guest" },
+    { "word": "wagen*", "translation": "car / wagon" },
+    { "word": "arzt*(:)e", "translation": "doctor (physician)" },
+    { "word": "hausarzt*(:)e", "translation": "family doctor / GP" }
   ]
 }

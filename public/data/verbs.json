@@ -551,6 +551,84 @@
         "ihr": "lügt",
         "sie/Sie": "lügen"
       }
+    },
+    {
+      "infinitive": "bleiben",
+      "category": "regular",
+      "translation": "to stay / remain",
+      "conjugation": {
+        "ich": "bleibe",
+        "du": "bleibst",
+        "er/sie/es": "bleibt",
+        "wir": "bleiben",
+        "ihr": "bleibt",
+        "sie/Sie": "bleiben"
+      }
+    },
+    {
+      "infinitive": "lesen",
+      "category": "vowel_change",
+      "translation": "to read",
+      "conjugation": {
+        "ich": "lese",
+        "du": "liest",
+        "er/sie/es": "liest",
+        "wir": "lesen",
+        "ihr": "lest",
+        "sie/Sie": "lesen"
+      }
+    },
+    {
+      "infinitive": "weinen",
+      "category": "regular",
+      "translation": "to cry",
+      "conjugation": {
+        "ich": "weine",
+        "du": "weinst",
+        "er/sie/es": "weint",
+        "wir": "weinen",
+        "ihr": "weint",
+        "sie/Sie": "weinen"
+      }
+    },
+    {
+      "infinitive": "schreien",
+      "category": "regular",
+      "translation": "to scream / shout",
+      "conjugation": {
+        "ich": "schreie",
+        "du": "schreist",
+        "er/sie/es": "schreit",
+        "wir": "schreien",
+        "ihr": "schreit",
+        "sie/Sie": "schreien"
+      }
+    },
+    {
+      "infinitive": "sagen",
+      "category": "regular",
+      "translation": "to say",
+      "conjugation": {
+        "ich": "sage",
+        "du": "sagst",
+        "er/sie/es": "sagt",
+        "wir": "sagen",
+        "ihr": "sagt",
+        "sie/Sie": "sagen"
+      }
+    },
+    {
+      "infinitive": "werden",
+      "category": "vowel_change",
+      "translation": "to become",
+      "conjugation": {
+        "ich": "werde",
+        "du": "wirst",
+        "er/sie/es": "wird",
+        "wir": "werden",
+        "ihr": "werdet",
+        "sie/Sie": "werden"
+      }
     }
   ],
   "adjektive": [
