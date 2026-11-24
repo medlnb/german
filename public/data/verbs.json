@@ -629,6 +629,110 @@
         "ihr": "werdet",
         "sie/Sie": "werden"
       }
+    },
+    {
+      "infinitive": "waschen",
+      "category": "vowel_change",
+      "translation": "to wash",
+      "conjugation": {
+        "ich": "wasche",
+        "du": "wäschst",
+        "er/sie/es": "wäscht",
+        "wir": "waschen",
+        "ihr": "wascht",
+        "sie/Sie": "waschen"
+      }
+    },
+    {
+      "infinitive": "nehmen",
+      "category": "vowel_change",
+      "translation": "to take",
+      "conjugation": {
+        "ich": "nehme",
+        "du": "nimmst",
+        "er/sie/es": "nimmt",
+        "wir": "nehmen",
+        "ihr": "nehmt",
+        "sie/Sie": "nehmen"
+      }
+    },
+    {
+      "infinitive": "lachen",
+      "category": "regular",
+      "translation": "to laugh",
+      "conjugation": {
+        "ich": "lache",
+        "du": "lachst",
+        "er/sie/es": "lacht",
+        "wir": "lachen",
+        "ihr": "lacht",
+        "sie/Sie": "lachen"
+      }
+    },
+    {
+      "infinitive": "beißen",
+      "category": "sxz",
+      "translation": "to bite",
+      "conjugation": {
+        "ich": "beiße",
+        "du": "beißt",
+        "er/sie/es": "beißt",
+        "wir": "beißen",
+        "ihr": "beißt",
+        "sie/Sie": "beißen"
+      }
+    },
+    {
+      "infinitive": "begrüßen",
+      "category": "sxz",
+      "translation": "to welcome / greet",
+      "conjugation": {
+        "ich": "begrüße",
+        "du": "begrüßt",
+        "er/sie/es": "begrüßt",
+        "wir": "begrüßen",
+        "ihr": "begrüßt",
+        "sie/Sie": "begrüßen"
+      }
+    },
+    {
+      "infinitive": "kennen",
+      "category": "regular",
+      "translation": "to know (be acquainted with)",
+      "conjugation": {
+        "ich": "kenne",
+        "du": "kennst",
+        "er/sie/es": "kennt",
+        "wir": "kennen",
+        "ihr": "kennt",
+        "sie/Sie": "kennen"
+      }
+    },
+    {
+      "infinitive": "reparieren",
+      "category": "regular",
+      "translation": "to repair",
+      "conjugation": {
+        "ich": "repariere",
+        "du": "reparierst",
+        "er/sie/es": "repariert",
+        "wir": "reparieren",
+        "ihr": "repariert",
+        "sie/Sie": "reparieren"
+      }
+    },
+    {
+      "infinitive": "brauchen",
+      "category": "regular",
+      "translation": "to need",
+      "conjugation": {
+        "ich": "brauche",
+        "du": "brauchst",
+        "er/sie/es": "braucht",
+        "wir": "brauchen",
+        "ihr": "braucht",
+        "sie/Sie": "brauchen"
+      }
     }
   ],
   "adjektive": [

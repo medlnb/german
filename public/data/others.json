@@ -9,6 +9,11 @@
     { "word": "schön", "translation": "beautiful" },
     { "word": "leer", "translation": "empty" },
     { "word": "voll", "translation": "full" },
-    { "word": "hübsch", "translation": "pretty / attractive" }
+    { "word": "hübsch", "translation": "pretty / attractive" },
+    { "word": "lecker", "translation": "tasty / delicious" },
+    { "word": "aber", "translation": "but" },
+    { "word": "sehr", "translation": "very" },
+    { "word": "gut", "translation": "good" },
+    { "word": "draußen", "translation": "outside" }
   ]
 }

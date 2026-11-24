@@ -16,7 +16,10 @@
     { "word": "kino*s", "translation": "cinema" },
     { "word": "theater*", "translation": "theater" },
     { "word": "wetter*", "translation": "weather" },
-    { "word": "baby*s", "translation": "baby" }
+    { "word": "baby*s", "translation": "baby" },
+    { "word": "mädchen*", "translation": "girl" },
+    { "word": "bild*er", "translation": "picture / image" },
+    { "word": "ei*er", "translation": "egg" }
   ],
   "die": [
     { "word": "zeit*en", "translation": "time" },
@@ -74,6 +77,12 @@
     { "word": "gast*(:)e", "translation": "guest" },
     { "word": "wagen*", "translation": "car / wagon" },
     { "word": "arzt*(:)e", "translation": "doctor (physician)" },
-    { "word": "hausarzt*(:)e", "translation": "family doctor / GP" }
+    { "word": "hausarzt*(:)e", "translation": "family doctor / GP" },
+    { "word": "schüler*", "translation": "pupil / school student" },
+    { "word": "junge*n", "translation": "boy" },
+    { "word": "turm*(:)e", "translation": "tower" },
+    { "word": "freund*e", "translation": "friend" },
+    { "word": "koffer*", "translation": "suitcase" },
+    { "word": "student*en", "translation": "university student" }
   ]
 }
