@@ -26,6 +26,9 @@
       >
         Per page: {{ pageSize }}
       </button>
+      <button class="btn small" @click="nextSort" v-if="!memorizeMode">
+        Sort: {{ sortLabel }}
+      </button>
       <button class="btn small" @click="toggleMode">
         Mode: {{ memorizeMode ? "Test" : "View" }}
       </button>
@@ -43,6 +46,18 @@
       </button>
     </div>
 
+    <div class="buttons top" v-if="!memorizeMode && !loading && !error">
+      <span class="selection-info">Selected: {{ selectedInViewCount }}</span>
+      <button class="btn small" @click="selectAllInView">Select all</button>
+      <button
+        class="btn small"
+        :disabled="selectedInViewCount === 0"
+        @click="deselectAllInView"
+      >
+        Deselect all
+      </button>
+    </div>
+
     <p v-if="loading" class="hint">Loading words…</p>
     <p v-else-if="error" class="hint error">{{ error }}</p>
 
@@ -56,8 +71,28 @@
           v-for="item in pagedWords"
           :key="item.key"
           class="word-row"
-          :class="'gender-' + item.gender"
+          :class="['gender-' + item.gender, { selected: isSelected(item.key) }]"
         >
+          <button
+            type="button"
+            class="select-toggle"
+            :class="{ active: isSelected(item.key) }"
+            :aria-pressed="isSelected(item.key)"
+            :aria-label="
+              (isSelected(item.key) ? 'Deselect ' : 'Select ') +
+              displaySingular(item.raw)
+            "
+            :title="
+              isSelected(item.key)
+                ? 'Remove from test selection'
+                : 'Add to test selection'
+            "
+            @click="toggleSelected(item.key)"
+          >
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <polyline points="3.5 8.5 6.5 11.5 12.5 4.5" />
+            </svg>
+          </button>
           <span class="gender-badge">{{ item.gender }}</span>
           <span class="word-text" :class="{ dots: hideWord }">
             <template v-if="!hideWord">
@@ -97,8 +132,16 @@
 
     <!-- TEST MODE -->
     <template v-else>
+      <p v-if="hasActiveSelection && testPool.length" class="hint test-scope">
+        🎯 Testing selected words only ({{ testPool.length }})
+      </p>
+
       <div v-if="testWords.length === 0" class="hint">
-        No words in this category.
+        {{
+          hasActiveSelection
+            ? "No selected words in this category. Switch to All or select words here."
+            : "No words in this category."
+        }}
       </div>
 
       <div v-else-if="testIndex >= testWords.length" class="test-done">
@@ -198,7 +241,7 @@ import { usePageSize } from "~/composables/usePageSize";
 
 const hideWord = ref(false);
 
-type WordEntry = { word: string; translation: string };
+type WordEntry = { word: string; translation: string; added?: string };
 type WordData = Record<"das" | "die" | "der", WordEntry[]>;
 type Gender = "das" | "die" | "der";
 
@@ -212,6 +255,29 @@ const genderOptions: (Gender | "all")[] = ["all", "der", "die", "das"];
 const showTranslations = ref(true);
 const memorizeMode = ref(false);
 
+// --- Words selected for test mode (remembered in the browser) ---
+// Keys are stable ("gender:raw word"), not positions, so editing words.json
+// can never make an old selection point at a different word.
+const SELECTION_KEY = "german:selectedWords:words";
+const selectedKeys = ref<Set<string>>(new Set());
+
+// --- Added-time ordering ---
+// `added` comes from words.json. For words added without that field, the app
+// remembers when it first saw them so they still sort as newly added.
+const FIRST_SEEN_KEY = "german:firstSeen:words";
+const firstSeen = ref<Record<string, number>>({});
+
+const sortModes = ["default", "newest", "oldest"] as const;
+type SortMode = (typeof sortModes)[number];
+const SORT_KEY = "german:sort:words";
+const sortMode = ref<SortMode>("default");
+const sortLabels: Record<SortMode, string> = {
+  default: "Default",
+  newest: "Newest added",
+  oldest: "Oldest added",
+};
+const sortLabel = computed(() => sortLabels[sortMode.value]);
+
 const page = ref(1);
 const { pageSize, nextPageSize } = usePageSize(
   "german:pageSize:words",
@@ -223,17 +289,105 @@ watch(pageSize, () => {
   page.value = 1;
 });
 
+function loadStoredState() {
+  try {
+    const savedSelection = localStorage.getItem(SELECTION_KEY);
+    if (savedSelection) {
+      const parsed = JSON.parse(savedSelection);
+      if (Array.isArray(parsed)) {
+        selectedKeys.value = new Set(
+          parsed.filter((key): key is string => typeof key === "string"),
+        );
+      }
+    }
+  } catch {
+    // localStorage unavailable — start with no selection
+  }
+
+  try {
+    const savedFirstSeen = localStorage.getItem(FIRST_SEEN_KEY);
+    if (savedFirstSeen) {
+      const parsed = JSON.parse(savedFirstSeen);
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        firstSeen.value = parsed;
+      }
+    }
+  } catch {
+    // localStorage unavailable — fall back to treating undated words as newest
+  }
+
+  try {
+    const savedSort = localStorage.getItem(SORT_KEY);
+    if (savedSort && (sortModes as readonly string[]).includes(savedSort)) {
+      sortMode.value = savedSort as SortMode;
+    }
+  } catch {
+    // localStorage unavailable — keep the default order
+  }
+}
+
+function persistSelection() {
+  try {
+    localStorage.setItem(
+      SELECTION_KEY,
+      JSON.stringify([...selectedKeys.value]),
+    );
+  } catch {
+    // ignore write failures (private mode, blocked storage, …)
+  }
+}
+
+function persistFirstSeen() {
+  try {
+    localStorage.setItem(FIRST_SEEN_KEY, JSON.stringify(firstSeen.value));
+  } catch {
+    // ignore write failures
+  }
+}
+
+function persistSort() {
+  try {
+    localStorage.setItem(SORT_KEY, sortMode.value);
+  } catch {
+    // ignore write failures
+  }
+}
+
+// Stamp entries that have no "added" date the first time the app sees them,
+// so words appended to words.json later still count as the newest words.
+function stampNewWords(data: WordData) {
+  const now = Date.now();
+  let changed = false;
+  for (const g of ["der", "die", "das"] as Gender[]) {
+    for (const entry of data[g] || []) {
+      if (entry.added) continue;
+      const key = `${g}:${entry.word}`;
+      if (!(key in firstSeen.value)) {
+        firstSeen.value[key] = now;
+        changed = true;
+      }
+    }
+  }
+  if (changed) persistFirstSeen();
+}
+
 onMounted(async () => {
+  loadStoredState();
   try {
     const res = await fetch("/data/words.json");
     if (!res.ok) throw new Error("Failed to load words");
-    rawData.value = await res.json();
+    const data: WordData = await res.json();
+    stampNewWords(data);
+    rawData.value = data;
   } catch (e) {
     error.value = "Could not load words.json";
   } finally {
     loading.value = false;
   }
 });
+
+watch(selectedKeys, persistSelection);
+watch(sortMode, persistSort);
 
 function genderLabel(g: string) {
   if (g === "all") return "All";
@@ -258,6 +412,8 @@ type FlatWord = {
   raw: string;
   translation: string;
   key: string;
+  added?: string;
+  index: number;
 };
 
 const flatWords = computed<FlatWord[]>(() => {
@@ -271,6 +427,8 @@ const flatWords = computed<FlatWord[]>(() => {
         gender: g,
         raw: entry.word,
         translation: entry.translation,
+        added: entry.added,
+        index: list.length,
         key: `${g}:${entry.word}`,
       });
     });
@@ -278,13 +436,96 @@ const flatWords = computed<FlatWord[]>(() => {
   return list;
 });
 
+// --- Selection for test mode ---
+const allWordKeys = computed(() => {
+  const keys = new Set<string>();
+  if (!rawData.value) return keys;
+  for (const g of ["der", "die", "das"] as Gender[]) {
+    for (const entry of rawData.value[g] || []) {
+      keys.add(`${g}:${entry.word}`);
+    }
+  }
+  return keys;
+});
+
+// True when at least one saved key still exists in words.json. Stale keys are
+// kept in storage (a word that is removed and re-added stays selected) but do
+// not count as a selection.
+const hasActiveSelection = computed(() => {
+  for (const key of selectedKeys.value) {
+    if (allWordKeys.value.has(key)) return true;
+  }
+  return false;
+});
+
+const selectedInViewCount = computed(
+  () =>
+    flatWords.value.filter((word) => selectedKeys.value.has(word.key)).length,
+);
+
+function isSelected(key: string) {
+  return selectedKeys.value.has(key);
+}
+
+function toggleSelected(key: string) {
+  const next = new Set(selectedKeys.value);
+  if (next.has(key)) next.delete(key);
+  else next.add(key);
+  selectedKeys.value = next;
+}
+
+function selectAllInView() {
+  const next = new Set(selectedKeys.value);
+  for (const word of flatWords.value) next.add(word.key);
+  selectedKeys.value = next;
+}
+
+function deselectAllInView() {
+  const next = new Set(selectedKeys.value);
+  for (const word of flatWords.value) next.delete(word.key);
+  selectedKeys.value = next;
+}
+
+// Test only the words selected in the current view. If nothing is selected,
+// fall back to testing every word in the current category.
+const testPool = computed<FlatWord[]>(() => {
+  if (!hasActiveSelection.value) return flatWords.value;
+  return flatWords.value.filter((word) => selectedKeys.value.has(word.key));
+});
+
+// --- Sort by time added ---
+const addedTime = (word: FlatWord): number => {
+  if (word.added) {
+    const time = Date.parse(word.added);
+    if (!Number.isNaN(time)) return time;
+  }
+  const seenAt = firstSeen.value[word.key];
+  return typeof seenAt === "number" ? seenAt : Number.MAX_SAFE_INTEGER;
+};
+
+const sortedWords = computed<FlatWord[]>(() => {
+  if (sortMode.value === "default") return flatWords.value;
+  const newestFirst = sortMode.value === "newest";
+  return [...flatWords.value].sort((a, b) => {
+    const byDate = addedTime(a) - addedTime(b);
+    if (byDate !== 0) return newestFirst ? -byDate : byDate;
+    return a.index - b.index;
+  });
+});
+
+function nextSort() {
+  const index = sortModes.indexOf(sortMode.value);
+  sortMode.value = sortModes[(index + 1) % sortModes.length];
+  page.value = 1;
+}
+
 // --- View mode pagination ---
 const totalPages = computed(() =>
-  Math.max(1, Math.ceil(flatWords.value.length / pageSize.value)),
+  Math.max(1, Math.ceil(sortedWords.value.length / pageSize.value)),
 );
 const pagedWords = computed(() => {
   const start = (page.value - 1) * pageSize.value;
-  return flatWords.value.slice(start, start + pageSize.value);
+  return sortedWords.value.slice(start, start + pageSize.value);
 });
 
 // --- Plural parser ---
@@ -470,7 +711,7 @@ function nextTestWord() {
 }
 
 function restartTest() {
-  testWords.value = shuffle(flatWords.value);
+  testWords.value = shuffle(testPool.value);
   testIndex.value = 0;
   testInput.value = "";
   testResults.value = [];
@@ -478,7 +719,7 @@ function restartTest() {
   focusInput();
 }
 
-watch(flatWords, restartTest);
+watch(testPool, restartTest);
 </script>
 
 <style>
@@ -522,6 +763,15 @@ watch(flatWords, restartTest);
   background: rgba(79, 140, 255, 0.3);
   border-color: rgba(79, 140, 255, 0.6);
 }
+.btn.small:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.selection-info {
+  align-self: center;
+  font-size: 0.8rem;
+  color: rgba(230, 238, 248, 0.7);
+}
 
 /* Compact word rows */
 .word-list {
@@ -541,13 +791,76 @@ watch(flatWords, restartTest);
   font-size: 0.9rem;
 }
 .word-row.gender-der {
-  border-left-color: #4f8cff;
+  --row-accent: #4f8cff;
+  --row-accent-ink: #ffffff;
+  border-left-color: var(--row-accent);
 }
 .word-row.gender-die {
-  border-left-color: #ff6b9d;
+  --row-accent: #ff6b9d;
+  --row-accent-ink: #ffffff;
+  border-left-color: var(--row-accent);
 }
 .word-row.gender-das {
-  border-left-color: #f4c95d;
+  --row-accent: #f4c95d;
+  --row-accent-ink: #221f14;
+  border-left-color: var(--row-accent);
+}
+.word-row.selected {
+  background: rgba(79, 140, 255, 0.14);
+  background: color-mix(in srgb, var(--row-accent, #4f8cff) 14%, transparent);
+}
+.select-toggle {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--row-accent-ink, #ffffff);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease;
+}
+.select-toggle:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+}
+.select-toggle:active {
+  transform: scale(0.88);
+}
+.select-toggle:focus-visible {
+  outline: 2px solid rgba(79, 140, 255, 0.75);
+  outline-offset: 2px;
+}
+.select-toggle svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.select-toggle.active {
+  background: var(--row-accent, #4f8cff);
+  border-color: var(--row-accent, #4f8cff);
+}
+.select-toggle.active:hover {
+  filter: brightness(1.08);
+}
+.select-toggle.active svg {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .gender-badge {
@@ -607,6 +920,9 @@ watch(flatWords, restartTest);
 }
 
 /* Test mode */
+.test-scope {
+  margin-bottom: 0.5rem;
+}
 .test-panel {
   display: flex;
   flex-direction: column;
