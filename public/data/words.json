@@ -19,7 +19,9 @@
     { "word": "baby*s", "translation": "baby" },
     { "word": "mädchen*", "translation": "girl" },
     { "word": "bild*er", "translation": "picture / image" },
-    { "word": "ei*er", "translation": "egg" }
+    { "word": "ei*er", "translation": "egg" },
+    { "word": "abendessen*", "translation": "dinner / evening meal" },
+    { "word": "pferd*e", "translation": "horse" }
   ],
   "die": [
     { "word": "zeit*en", "translation": "time" },
@@ -50,7 +52,13 @@
     { "word": "welt*en", "translation": "world" },
     { "word": "schule*n", "translation": "school" },
     { "word": "universität*en", "translation": "university" },
-    { "word": "zeitung*en", "translation": "newspaper" }
+    { "word": "zeitung*en", "translation": "newspaper" },
+    { "word": "tasche*n", "translation": "bag" },
+    { "word": "bluse*n", "translation": "blouse" },
+    { "word": "brille*n", "translation": "glasses" },
+    { "word": "uhr*en", "translation": "clock / watch" },
+    { "word": "lampe*n", "translation": "lamp" },
+    { "word": "idee*n", "translation": "idea" }
   ],
   "der": [
     { "word": "brief*e", "translation": "letter" },
@@ -83,6 +91,10 @@
     { "word": "turm*(:)e", "translation": "tower" },
     { "word": "freund*e", "translation": "friend" },
     { "word": "koffer*", "translation": "suitcase" },
-    { "word": "student*en", "translation": "university student" }
+    { "word": "student*en", "translation": "university student" },
+    { "word": "mantel*:", "translation": "coat" },
+    { "word": "kuchen*", "translation": "cake" },
+    { "word": "kuli*s", "translation": "ballpoint pen" },
+    { "word": "schuh*e", "translation": "shoe" }
   ]
 }

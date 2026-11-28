@@ -733,6 +733,71 @@
         "ihr": "braucht",
         "sie/Sie": "brauchen"
       }
+    },
+    {
+      "infinitive": "beantworten",
+      "category": "mntd",
+      "translation": "to answer (a question)",
+      "conjugation": {
+        "ich": "beantworte",
+        "du": "beantwortest",
+        "er/sie/es": "beantwortet",
+        "wir": "beantworten",
+        "ihr": "beantwortet",
+        "sie/Sie": "beantworten"
+      }
+    },
+    {
+      "infinitive": "treffen",
+      "category": "vowel_change",
+      "translation": "to meet",
+      "conjugation": {
+        "ich": "treffe",
+        "du": "triffst",
+        "er/sie/es": "trifft",
+        "wir": "treffen",
+        "ihr": "trefft",
+        "sie/Sie": "treffen"
+      }
+    },
+    {
+      "infinitive": "kochen",
+      "category": "regular",
+      "translation": "to cook",
+      "conjugation": {
+        "ich": "koche",
+        "du": "kochst",
+        "er/sie/es": "kocht",
+        "wir": "kochen",
+        "ihr": "kocht",
+        "sie/Sie": "kochen"
+      }
+    },
+    {
+      "infinitive": "backen",
+      "category": "vowel_change",
+      "translation": "to bake",
+      "conjugation": {
+        "ich": "backe",
+        "du": "bäckst",
+        "er/sie/es": "bäckt",
+        "wir": "backen",
+        "ihr": "backt",
+        "sie/Sie": "backen"
+      }
+    },
+    {
+      "infinitive": "suchen",
+      "category": "regular",
+      "translation": "to search / look for",
+      "conjugation": {
+        "ich": "suche",
+        "du": "suchst",
+        "er/sie/es": "sucht",
+        "wir": "suchen",
+        "ihr": "sucht",
+        "sie/Sie": "suchen"
+      }
     }
   ],
   "adjektive": [
